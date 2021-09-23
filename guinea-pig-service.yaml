@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guinea-pig-service
+  namespace: gp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guinea-pig-service
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: guinea-pig-service
+    spec:
+      hostNetwork: false
+      containers:
+      - name: guinea-pig-service
+        image: gcr.io/shsvc-prod-us-b3a5/guinea-pig-service
+        env:
+        envFrom:
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 30
+          failureThreshold: 1
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: guinea-pig-service
+  namespace: gp
+  annotations:
+spec:
+  selector:
+    app: guinea-pig-service
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
