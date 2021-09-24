@@ -2,22 +2,24 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: guinea-pig-service
-  namespace: gp
+  namespace: unger
 spec:
   replicas: 1
+  progressDeadlineSeconds: 1200
   selector:
     matchLabels:
       app: guinea-pig-service
   template:
     metadata:
-      annotations:
       labels:
         app: guinea-pig-service
     spec:
       hostNetwork: false
+      terminationGracePeriodSeconds: 86400 # 24 hours
       containers:
       - name: guinea-pig-service
-        image: gcr.io/shsvc-prod-us-b3a5/guinea-pig-service
+        image: localhost:5000/guinea-pig-service
+        imagePullPolicy: Always
         env:
         envFrom:
         ports:
@@ -29,18 +31,23 @@ spec:
           initialDelaySeconds: 90
           timeoutSeconds: 30
           failureThreshold: 1
+        lifecycle:
+          preStop:
+            httpGet:
+              path: /prestop
+              port: 8080
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: guinea-pig-service
-  namespace: gp
+  namespace: unger
   annotations:
 spec:
   selector:
     app: guinea-pig-service
   ports:
   - protocol: TCP
-    port: 8080
+    port: 8888
     targetPort: 8080
   type: LoadBalancer
