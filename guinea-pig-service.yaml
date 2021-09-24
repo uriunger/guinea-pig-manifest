@@ -5,7 +5,7 @@ metadata:
   namespace: unger
 spec:
   replicas: 1
-  progressDeadlineSeconds: 1200
+  progressDeadlineSeconds: 1201
   selector:
     matchLabels:
       app: guinea-pig-service
