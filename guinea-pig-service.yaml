@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: guinea-pig-service
-  namespace: unger
+  namespace: unger2
 spec:
   replicas: 1
   progressDeadlineSeconds: 1200
@@ -41,7 +41,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: guinea-pig-service
-  namespace: unger
+  namespace: unger2
   annotations:
 spec:
   selector:
